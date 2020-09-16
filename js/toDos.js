@@ -11,15 +11,24 @@ const must = document.querySelector(".mustToDo"),
     categoryBtn = form.querySelectorAll(".categoryBtn");
 
 const MUST_LS = "MUST",
-    CAN_LS = "CAN";
+    CAN_LS = "CAN",
+    CONFIRMED_LS = "CONFIRMED";
 let mustList,
     canList,
+    confirmedList = [],
     category = "MUST",
     id = 0;
 
-function saveToDos() {
+function saveMust() {
     localStorage.setItem(MUST_LS, JSON.stringify(mustList));
+}
+
+function saveCan() {
     localStorage.setItem(CAN_LS, JSON.stringify(canList));
+}
+
+function saveConfirm() {
+    localStorage.setItem(CONFIRMED_LS, JSON.stringify(confirmedList));
 }
 
 function showInput() {
@@ -53,6 +62,7 @@ function categorySwitch(e) {
 
 // random()
 function getId() {
+    id = "";
     for (let i = 0; i < 6; i++) {
         const number = Math.floor(Math.random() * 15 + 1); // 1~ 15
         id += number.toString(16);
@@ -80,8 +90,45 @@ function createToDo(e) {
 }
 
 function deleteToDo(e) {
-    e.preventDefault();
-    console.dir(e.target.parentNode.className);
+    const span = e.target.parentNode.parentElement.parentElement;
+    span.parentNode.removeChild(span); // html delete
+    const targetCategory = e.target.attributes[2].value;
+    const targetId = e.target.attributes[1].value;
+    if (targetCategory === MUST_LS) {
+        mustList = mustList.filter(function (must) {
+            return must.id !== targetId;
+        });
+        saveMust();
+    } else {
+        canList = canList.filter(function (can) {
+            return can.id !== targetId
+        });
+        saveCan();
+    }
+}
+
+function confirmedToDo(e) {
+    const span = e.target.parentNode.parentElement.parentElement;
+    span.parentNode.removeChild(span); // html delete
+    const targetCategory = e.target.attributes[2].value;
+    const targetId = e.target.attributes[1].value;
+    if (targetCategory === MUST_LS) {
+        const targetObject = mustList.find(must => must.id === targetId);
+        mustList = mustList.filter(function (must) {
+            return must.id !== targetId;
+        });
+        confirmedList.push(targetObject);
+        saveMust();
+        saveConfirm();
+    } else {
+        const targetObject = canList.find(can => can.id === targetId);
+        canList = canList.filter(function (can) {
+            return can.id !== targetId
+        });
+        confirmedList.push(targetObject);
+        saveCan();
+        saveConfirm();
+    }
 }
 
 function loadState() {
@@ -104,14 +151,15 @@ function paintDiv(obj) {
     const span = document.createElement("span");
     const del = document.createElement("span");
     const confirm = document.createElement("span");
-    div.innerText += obj.text;
-    del.innerHTML = `<i class="far fa-trash-alt"></i>`;
-    confirm.innerHTML = `<i class="far fa-check-circle"></i>`;
     // 해당 element ID저장
     const objId = obj.id;
-    del.classList.add(objId);
-    confirm.classList.add(objId);
+    const objCategory = obj.category;
+    div.innerText += obj.text;
+    del.innerHTML = `<i class="far fa-trash-alt" id="${objId}" category="${objCategory}"></i>`;
+    confirm.innerHTML = `<i class="far fa-check-circle" id="${objId}" category="${objCategory}"></i>`;
+
     del.addEventListener("click", deleteToDo);
+    confirm.addEventListener("click", confirmedToDo);
     span.classList.add("nonclick");
     span.appendChild(del);
     span.appendChild(confirm);
@@ -122,8 +170,6 @@ function paintDiv(obj) {
     } else {
         canToDoList.appendChild(div);
     }
-
-
 }
 
 function init() {
