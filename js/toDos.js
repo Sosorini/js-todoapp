@@ -80,10 +80,11 @@ function createToDo(e) {
     }
     if (category === MUST_LS) {
         mustList.push(obj);
+        saveMust();
     } else {
         canList.push(obj);
+        saveCan();
     }
-    saveToDos();
     paintDiv(obj);
     showInput();
     inputText.value = "";
@@ -154,8 +155,8 @@ function paintDiv(obj) {
     // 해당 element ID저장
     const objId = obj.id;
     const objCategory = obj.category;
-    div.innerText += obj.text;
-    del.innerHTML = `<i class="far fa-trash-alt" id="${objId}" category="${objCategory}"></i>`;
+    div.innerHTML += `<input class="toDoList__text" type="text" value="${obj.text}" readOnly />`;
+    del.innerHTML = `<i class="far fa-trash-alt" id="${objId}" category="${objCategory}"></input>`;
     confirm.innerHTML = `<i class="far fa-check-circle" id="${objId}" category="${objCategory}"></i>`;
 
     del.addEventListener("click", deleteToDo);
