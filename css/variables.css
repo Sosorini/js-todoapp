@@ -1,0 +1,16 @@
+:root {
+    --white: white;
+    --black: rgba(0, 0, 0, 0.7);
+    --gray: rgba(0, 0, 0, 0.3);
+    --beige: #F3EDE8;
+    --deep-beige: #d4cfcb;
+    --main-color: #97c8f8;
+    --bold-color: #458fda;
+
+    --red: #CE062E;
+
+    --dashed-border: 3px dashed var(--deep-color);
+
+    --padding: 0 3vw;
+
+}

@@ -1,0 +1,50 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans:wght@400;700&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+@import "variables.css";
+
+/* page */
+@import "header.css";
+@import "toDos.css";
+@import "footer.css";
+
+body {
+    font-family: "Noto Sans", sans-serif;
+    font-family: "Noto Sans KR", sans-serif;
+    background-color: var(--white);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: 6vw;
+    font-weight: 600;
+    padding: 2vh 0;
+    text-shadow: 1px 1px 1px var(--black);
+    letter-spacing: 1.2px;
+}
+
+input[type="button"] {
+    width: 20vw;
+    padding: 1.5vw;
+    border: none;
+    border-radius: 3vw;
+    color: white;
+    font-size: 3vw;
+    font-weight: 600;
+    background-color: var(--main-color);
+}
+
+input[type="button"]:active,
+input[type="button"]:focus {
+    outline: none;
+}
+
+.invisible {
+    display: none;
+}
+
+.showing {
+    display: flex;
+}

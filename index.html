@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+    <title>Daily ToDo</title>
+</head>
+
+<body>
+    <header>
+        <h2 class="today-js"></h2>
+        <h4 class="todayDayOfTheWeek-js"></h4>
+    </header>
+    <main>
+        <div class="mustToDo">
+            <h1>MUST</h1>
+            <div class="mustToDoList">
+                <!--toDoList divs-->
+            </div>
+        </div>
+        <div class="canToDo">
+            <h1>CAN</h1>
+            <div class="canToDoList"></div>
+        </div>
+    </main>
+    <footer>
+        <form class="inputToDo invisible">
+            <div class="input__category">
+                <input class="categoryBtn deep" type="button" value="MUST" />
+                <input class="categoryBtn" type="button" value="CAN" />
+            </div>
+            <i class="fas fa-angle-double-down"></i>
+            <div class="input-js">
+                <input class="inputeToDo__text input-js-text" required type="text" placeholder="Type ToDo" autofocus />
+                <input class="inputToDo__submit input-js-submit" type="button" value="GO" />
+            </div>
+        </form>
+        <div class="buttons showing">
+            <span><i class="fas fa-plus add"></i></span>
+        </div>
+    </footer>
+    <script src="js/today.js"></script>
+    <script src="js/toDos.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+main {
+    margin: 0 5vw;
+    margin-top: 12vh;
+    font-size: 6vw;
+}
+
+.mustToDo {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--beige);
+    margin-bottom: 1vh;
+    padding: var(--padding);
+}
+
+.canToDo {
+    /* height: 30vh; */
+    display: flex;
+    flex-direction: column;
+    background-color: var(--beige);
+    padding: var(--padding);
+}
+
+main h1 {
+    background-color: var(--beige);
+    width: 80vw;
+    position: absolute;
+}
+
+.mustToDo h1 {
+    color: var(--bold-color);
+}
+
+.canToDo h1 {
+    color: var(--main-color);
+}
+
+.mustToDoList,
+.canToDoList {
+    font-weight: 400;
+    height: 27vh;
+    margin-top: 7vh;
+    overflow: auto;
+}
+
+/* 만들어진 애들 */
+.toDoList {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 8vh;
+    width: 80vw;
+}
+
+.nonclick {
+    visibility: hidden;
+}
+
+.toDoList .nonclick i {
+    display: inline;
+    vertical-align: middle;
+    font-size: 100%;
+    margin-left: 3vw;
+    color: var(--main-color);
+    text-shadow: 1px 1px 1px var(--gray);
+    visibility: visible;
+    cursor: pointer;
+}
+
+::-webkit-scrollbar {
+    width: 1vw;
+    background-color: var(--beige);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--deep-beige);
+}
