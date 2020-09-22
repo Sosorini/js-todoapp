@@ -19,16 +19,37 @@ let mustList,
     category = "MUST",
     id = 0;
 
-function saveMust() {
-    localStorage.setItem(MUST_LS, JSON.stringify(mustList));
-}
-
-function saveCan() {
-    localStorage.setItem(CAN_LS, JSON.stringify(canList));
+function saveToDos(targetCategory) {
+    if (targetCategory === MUST_LS) {
+        localStorage.setItem(MUST_LS, JSON.stringify(mustList));
+    } else {
+        localStorage.setItem(CAN_LS, JSON.stringify(canList));
+    }
 }
 
 function saveConfirm() {
     localStorage.setItem(CONFIRMED_LS, JSON.stringify(confirmedList));
+}
+
+function findMatch(targetCategory, targetId) {
+    if (targetCategory === MUST_LS) {
+        return mustList.find(must => must.id === targetId);
+    } else {
+        return canList.find(can => can.id === targetId);
+    }
+}
+
+function findNotMatch(targetCategory, targetId) {
+    if (targetCategory === MUST_LS) {
+        mustList = mustList.filter(function (must) {
+            return must.id !== targetId;
+        });
+    } else {
+        canList = canList.filter(function (can) {
+            return can.id !== targetId
+        });
+    }
+    saveToDos(targetCategory);
 }
 
 function showInput() {
@@ -46,6 +67,7 @@ function showInput() {
         btn.addEventListener("click", categorySwitch);
     });
 }
+
 
 function categorySwitch(e) {
     e.preventDefault();
@@ -69,6 +91,58 @@ function getId() {
     }
 }
 
+function updateText(e) {
+    const span = e.target.parentNode.parentElement;
+    const targetCategory = e.target.attributes[2].nodeValue;
+    const targetId = e.target.id;
+    const obj = findMatch(targetCategory, targetId);
+    const toDoInput = document.querySelector(".toDoList input");
+    obj.text = toDoInput.value;
+    toDoInput.readOnly = true;
+    const spanBtn = paintBtn(obj);
+    span.parentNode.appendChild(spanBtn);
+    span.parentNode.removeChild(span);
+    saveToDos(targetCategory);
+}
+
+function updateToDo(e) {
+    e.target.readOnly = false;
+    const obj = e.target.nextElementSibling.childNodes[0].childNodes[0];
+    const objId = obj.attributes[1].nodeValue;
+    const objCategory = obj.attributes[2].nodeValue;
+    const parentDiv = e.target.parentNode;
+    const span = document.createElement("span");
+    span.innerHTML = `<i class="fas fa-check-circle" id="${objId}" category="${objCategory}"></i>`;
+    parentDiv.childNodes[1].innerHTML = "";
+    parentDiv.childNodes[1].appendChild(span);
+    span.addEventListener("click", updateText);
+
+}
+
+function deleteToDo(e) {
+    const span = e.target.parentNode.parentElement.parentElement;
+    span.parentNode.removeChild(span); // html delete
+    const targetCategory = e.target.attributes[2].value;
+    const targetId = e.target.attributes[1].value;
+    findNotMatch(targetCategory, targetId);
+}
+
+function confirmedToDo(e) {
+    const span = e.target.parentNode.parentElement.parentElement;
+    span.parentNode.removeChild(span); // html delete
+    const targetCategory = e.target.attributes[2].value;
+    const targetId = e.target.attributes[1].value;
+    findNotMatch(targetCategory, targetId);
+    if (targetCategory === MUST_LS) {
+        const targetObject = mustList.find(must => must.id === targetId);
+        confirmedList.push(targetObject);
+    } else {
+        const targetObject = canList.find(can => can.id === targetId);
+        confirmedList.push(targetObject);
+    }
+    saveConfirm();
+}
+
 function createToDo(e) {
     e.preventDefault();
     const currentValue = inputText.value;
@@ -90,48 +164,6 @@ function createToDo(e) {
     inputText.value = "";
 }
 
-function deleteToDo(e) {
-    const span = e.target.parentNode.parentElement.parentElement;
-    span.parentNode.removeChild(span); // html delete
-    const targetCategory = e.target.attributes[2].value;
-    const targetId = e.target.attributes[1].value;
-    if (targetCategory === MUST_LS) {
-        mustList = mustList.filter(function (must) {
-            return must.id !== targetId;
-        });
-        saveMust();
-    } else {
-        canList = canList.filter(function (can) {
-            return can.id !== targetId
-        });
-        saveCan();
-    }
-}
-
-function confirmedToDo(e) {
-    const span = e.target.parentNode.parentElement.parentElement;
-    span.parentNode.removeChild(span); // html delete
-    const targetCategory = e.target.attributes[2].value;
-    const targetId = e.target.attributes[1].value;
-    if (targetCategory === MUST_LS) {
-        const targetObject = mustList.find(must => must.id === targetId);
-        mustList = mustList.filter(function (must) {
-            return must.id !== targetId;
-        });
-        confirmedList.push(targetObject);
-        saveMust();
-        saveConfirm();
-    } else {
-        const targetObject = canList.find(can => can.id === targetId);
-        canList = canList.filter(function (can) {
-            return can.id !== targetId
-        });
-        confirmedList.push(targetObject);
-        saveCan();
-        saveConfirm();
-    }
-}
-
 function loadState() {
     // 이렇게 초기값[]을 넣어주면 없어서 forEach못돌린다는 에러가 안뜬다
     mustList = JSON.parse(localStorage.getItem(MUST_LS)) || [];
@@ -147,23 +179,30 @@ function paintList() {
     });
 }
 
-function paintDiv(obj) {
-    const div = document.createElement("div");
+function paintBtn(obj) {
     const span = document.createElement("span");
     const del = document.createElement("span");
     const confirm = document.createElement("span");
-    // 해당 element ID저장
-    const objId = obj.id;
-    const objCategory = obj.category;
-    div.innerHTML += `<input class="toDoList__text" type="text" value="${obj.text}" readOnly />`;
-    del.innerHTML = `<i class="far fa-trash-alt" id="${objId}" category="${objCategory}"></input>`;
-    confirm.innerHTML = `<i class="far fa-check-circle" id="${objId}" category="${objCategory}"></i>`;
-
+    del.innerHTML = `<i class="far fa-trash-alt" id="${obj.id}" category="${obj.category}"></input>`;
+    confirm.innerHTML = `<i class="far fa-check-circle" id="${obj.id}" category="${obj.category}"></i>`;
     del.addEventListener("click", deleteToDo);
     confirm.addEventListener("click", confirmedToDo);
     span.classList.add("nonclick");
     span.appendChild(del);
     span.appendChild(confirm);
+    return span;
+}
+
+function paintDiv(obj) {
+    const div = document.createElement("div");
+    const input = document.createElement("input");
+    input.classList.add = "toDoList__text";
+    input.type = "text";
+    input.value = obj.text;
+    input.readOnly = true;
+    div.appendChild(input);
+    input.addEventListener("click", updateToDo);
+    const span = paintBtn(obj);
     div.appendChild(span);
     div.classList.add("toDoList");
     if (obj.category === MUST_LS) {
